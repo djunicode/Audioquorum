@@ -1,4 +1,4 @@
-# Dubium-App
+# Audioquorum-App
 React-native project for Audioquorum app
 
 
