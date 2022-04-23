@@ -1,17 +1,23 @@
-import React from 'react'
+import React from 'react';
 import{
     View,
     Text,
     StyleSheet
-} from 'react-native'
+} from 'react-native';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import Activity from './Activity';
+import Quizzes from './Quizzes';
+
+const Drawer = createDrawerNavigator();
 
 function HomeScreen() {
   return (
-    <View style={styles.container}>
-        <Text style={styles.textStyle}>HomeScreen</Text>
-    </View>
-  )
-}
+  <Drawer.Navigator>
+    <Drawer.Screen name="Activity" component={Activity} />
+    <Drawer.Screen name="Quizzes" component={Quizzes} />
+  </Drawer.Navigator>
+  );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -25,4 +31,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default HomeScreen
+export default HomeScreen;

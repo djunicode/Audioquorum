@@ -6,6 +6,7 @@ import { Context as AuthContext } from './src/context/AuthContext';
 import Signin from './src/screens/Signin.js';
 import Signup from './src/screens/Signup.js';
 import HomeScreen from './src/screens/HomeScreen.js';
+import Scanner from './src/screens/Scanner.js';
 
 const AuthStack = createStackNavigator();
 function AuthFlow() {
@@ -15,6 +16,11 @@ function AuthFlow() {
         options={{ headerShown: false }}
         name="Signin"
         component={Signin}
+      />
+      <AuthStack.Screen
+        options={{ headerShown: false }}
+        name="Scanner"
+        component={Scanner}
       />
       <AuthStack.Screen
         options={{ headerShown: false }}
@@ -47,8 +53,8 @@ function App() {
         {state.token === null ? (
           <Stack.Screen
             options={{ headerShown: false }}
-            name="Auth"
-            component={AuthFlow}
+            name="Home"
+            component={HomeFlow}
           />
         ) : (
           <Stack.Screen
