@@ -7,15 +7,15 @@ const colour='#1D1042';
 
 function Signin({navigation}) {
     const [username,setUsername]=useState('');
+    const [password,setPassword]=useState('');
   return (
     <View style={styles.mainContainer}>
       <View style={styles.container1}><Text style={styles.header}>Audioquorum</Text></View>
       <View style={styles.container}>
-        <Text style={styles.desc}>Login to your account</Text>
+        <Text style={styles.title}>LOG-IN</Text>
         <View style={{ ...styles.inputContainer, marginTop: 40 }}>
-            <TextInput
-            style={styles.textInput}
-            placeholder="Email"
+          <Input
+            placeholder="Username"
             placeholderTextColor='black'
             keyboardType="email-address"
             autoCompleteType="email"
@@ -26,14 +26,13 @@ function Signin({navigation}) {
         </View>
         <View style={{ ...styles.inputContainer, marginTop: 20 }}>
           <Input
-            style={styles.textInput}
             placeholderTextColor='black'
-            // secureTextEntry={!visible}
+            secureTextEntry={true}
             placeholder="Password"
             autoCompleteType="password"
             autoCapitalize="none"
-            // value={password}
-            // onChangeText={text => setpassword(text)}
+            value={password}
+            onChangeText={text => setPassword(text)}
           />
         </View>
 
@@ -91,29 +90,20 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize:35,
       },
-      desc: {
-        color: '#1A1B2F',
+      title: {
+        color: '#1D1042',
         textAlign: 'center',
-        fontSize: wp('5%'),
-        marginTop: 2,
-      },
-      textInput: {
-        marginLeft: 5,
-        backgroundColor: 'grey',
-        fontSize: 15,
-        color: 'black',
-        paddingLeft: 10,
-        fontWeight: '600',
-        width:wp('70%')
+        fontSize: 40,
       },
       inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: 'grey',
-        // width: wp('80%'),
-        borderRadius: 10,
+        backgroundColor: 'white',
+        borderRadius: 5,
         height: 60,
         width: wp('85%'),
+        borderColor:'#1D1042',
+        borderWidth:1
       },
     
       container2: {
@@ -127,7 +117,6 @@ const styles = StyleSheet.create({
         marginTop: 40,
         width: wp('85%'),
         height: 50,
-        borderRadius: 50,
       }
 });
 

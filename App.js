@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React,{useEffect} from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as AuthProvider } from './src/context/AuthContext.js';
@@ -7,7 +7,6 @@ import Signin from './src/screens/Signin.js';
 import Signup from './src/screens/Signup.js';
 import HomeScreen from './src/screens/HomeScreen.js';
 import Scanner from './src/screens/Scanner.js';
-
 const AuthStack = createStackNavigator();
 function AuthFlow() {
   return (
@@ -45,6 +44,7 @@ function HomeFlow() {
 
 const Stack = createStackNavigator();
 function App() {
+
   const { state } = React.useContext(AuthContext);
   console.log(state);
   return (
@@ -53,8 +53,8 @@ function App() {
         {state.token === null ? (
           <Stack.Screen
             options={{ headerShown: false }}
-            name="Home"
-            component={HomeFlow}
+            name="Auth"
+            component={AuthFlow}
           />
         ) : (
           <Stack.Screen

@@ -4,6 +4,7 @@ import{
     Text,
     StyleSheet,TextInput
 } from 'react-native'
+import {widthPercentageToDP as wp,heightPercentageToDP as hp,} from 'react-native-responsive-screen';
 
 const Input=(props)=>{
   return (
@@ -12,6 +13,7 @@ const Input=(props)=>{
             style={styles.textInput}
             placeholder={props.placeholder}
             placeholderTextColor={props.placeholderTextColor}
+            secureTextEntry={props.secureTextEntry}
             keyboardType={props.keyboardType}
             autoCompleteType={props.autoCompleteType}
             autoCapitalize={props.autoCapitalize}
@@ -30,12 +32,11 @@ const styles = StyleSheet.create({
     },
     textInput: {
         marginLeft: 5,
-        backgroundColor: 'grey',
         fontSize: 15,
         color: 'black',
         paddingLeft: 10,
         fontWeight: '600',
-        
+        width:wp('70%')
       },
 });
 
