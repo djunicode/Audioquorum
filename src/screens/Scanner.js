@@ -29,7 +29,7 @@ function Fingerprint({navigation}) {
     console.log({success, error});
     if(success){
       // console.log("Success");
-      navigation.navigate('Signin')
+      navigation.navigate('HomeScreen')
     }
   };
   return (
