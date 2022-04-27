@@ -29,28 +29,23 @@ const DATA = [
   },
 ];
 
-function Activity({navigation}) {
+function Activity({ navigation }) {
   const renderItem = ({ item }) => (
-    <TouchableOpacity
-    onPress={()=>{navigation.navigate('QuizPage',
-    {
-      title: item.title,
-      subject: item.subject,
-    })}}>
-      <View style={styles.item}>
-        <Text style={{ ...styles.time, marginRight: 15 }}>{item.time}</Text>
-        <View style={{ flexDirection: 'column' }}>
-          <Text style={styles.text}>{item.title}</Text>
-          <Text style={styles.time}>due 15 Apr</Text>
-          <Text style={styles.time}>Subject: {item.subject}</Text>
-        </View>
-        <MaterialCommunityIcons
-          name="speaker-wireless"
-          size={40}
-          color={'#1D1042'}
-        />
+
+    <View style={styles.item}>
+      <Text style={{ ...styles.time, marginRight: 15 }}>{item.time}</Text>
+      <View style={{ flexDirection: 'column' }}>
+        <Text style={styles.text}>{item.title}</Text>
+        <Text style={styles.time}>due 15 Apr</Text>
+        <Text style={styles.time}>Subject: {item.subject}</Text>
       </View>
-    </TouchableOpacity>
+      <MaterialCommunityIcons
+        name="speaker-wireless"
+        size={40}
+        color={'#1D1042'}
+      />
+    </View>
+
   );
 
   return (
