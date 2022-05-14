@@ -2,6 +2,7 @@ import React from 'react';
 import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TouchableOpacity } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp, } from 'react-native-responsive-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import Footer from '../components/Footer';
 const DATA = [
   {
     id: '1',
@@ -55,6 +56,7 @@ function Activity({ navigation }) {
         renderItem={renderItem}
         keyExtractor={item => item.id}
       />
+      <Footer />
     </SafeAreaView>
   );
 };
