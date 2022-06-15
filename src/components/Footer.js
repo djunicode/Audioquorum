@@ -18,13 +18,13 @@ function Footer() {
     
     const [isloading, setIsloading] = useState(false);
 
-    useEffect(async() => {
+    // useEffect(async() => {
         
-        console.log(await Voice.getSpeechRecognitionServices());
-        // return () => {
-        //     Voice.destroy().then(Voice.removeAllListeners);
-        // }
-    }, [])
+    //     // console.log(await Voice.getSpeechRecognitionServices());
+    //     // return () => {
+    //     //     Voice.destroy().then(Voice.removeAllListeners);
+    //     // }
+    // }, [])
 
 
     const onSpeechStartHandler = (e) => {
@@ -51,7 +51,6 @@ function Footer() {
     }
 
     const startRecording = async () => {
-        console.log('Yash Shah');
         setIsloading(true);
         try {
             await Voice.start('en-Us');

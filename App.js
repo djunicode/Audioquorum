@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Provider as AuthProvider } from './src/context/AuthContext.js';
@@ -11,69 +11,69 @@ import HomeScreen from './src/screens/HomeScreen.js';
 import Scanner from './src/screens/Scanner.js';
 import QuizPage from './src/screens/QuizPage.js';
 import {
+  AppState,
   View
 } from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AuthStack = createStackNavigator();
 
-function AuthFlow() {
-  return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Splash"
-        component={Splash}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Signin"
-        component={Signin}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Scanner"
-        component={Scanner}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="Signup"
-        component={Signup}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="HomeScreen"
-        component={HomeScreen}
-      />
-      <AuthStack.Screen
-        options={{ headerShown: true, headerBackground: () => (<View style={{ backgroundColor: '#1D1042', height: 60 }}></View>), headerTintColor: 'white' }}
-        name="QuizPage"
-        component={QuizPage}
-      />
-    </AuthStack.Navigator>
-  );
-}
-
-function HomeFlow() {
-  return (
-    <AuthStack.Navigator>
-      <AuthStack.Screen
-        options={{ headerShown: false }}
-        name="HomeScreen"
-        component={HomeScreen}
-      />
-    </AuthStack.Navigator>
-  );
-}
 
 const Stack = createStackNavigator();
 function App() {
+  const { state } = useContext(AuthContext);
+  function AuthFlow() {
+    return (
+      <AuthStack.Navigator>
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Splash"
+          component={Splash}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Signin"
+          component={Signin}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Scanner"
+          component={Scanner}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="Signup"
+          component={Signup}
+        />
 
-  const { state } = React.useContext(AuthContext);
-  console.log(state);
+      </AuthStack.Navigator>
+    );
+  }
+
+  function HomeFlow() {
+    return (
+      <AuthStack.Navigator>
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="HomeScreen"
+          component={HomeScreen}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: true, headerBackground: () => (<View style={{ backgroundColor: '#1D1042', height: 60 }}></View>), headerTintColor: 'white' }}
+          name="QuizPage"
+          component={QuizPage}
+        />
+      </AuthStack.Navigator>
+    );
+  }
+
+
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        {state.token === null ? (
+        {state.token == '' ? (
+
           <Stack.Screen
             options={{ headerShown: false }}
             name="Auth"
