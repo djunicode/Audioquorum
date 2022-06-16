@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import createDataContext from './createDataContext';
 
 const authReducer = (state, action) => {
+
   switch (action.type) {
     case 'signout':
       return { token: '', username: '' };
@@ -23,6 +24,14 @@ const signup = dispatch => {
 };
 
 const signin = dispatch => {
+  const saveData = async (token) => {
+    try {
+      await AsyncStorage.setItem("token", token);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return ({ username, password }) => {
     var token;
     var myHeaders = new Headers();
@@ -45,7 +54,7 @@ const signin = dispatch => {
       .then((result) => {
         console.log(result.token);
         token = result.token;
-        AsyncStorage.setItem('token', token);
+        saveData(token);
       })
       .catch(error => console.log('error', error));
     // console.log('Signin');
@@ -60,7 +69,7 @@ const signin = dispatch => {
 };
 
 const signout = (dispatch) => {
-  return ({token}) => {
+  return (token) => {
     console.log(token + ' signout');
     var myHeaders = new Headers();
     myHeaders.append("Authorization", `Bearer ${token}`);

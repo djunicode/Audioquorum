@@ -78,7 +78,7 @@ function Footer() {
                 {isloading ? <ActivityIndicator size="large" color="red"></ActivityIndicator> :
                     <Ionicons
                         name='mic'
-                        size={55}
+                        size={50}
                         color="#1D1042">
                     </Ionicons>}
             </View>
@@ -92,9 +92,9 @@ function Footer() {
 const styles = StyleSheet.create({
     footer: {
         width: wp('100%'),
-        height: hp('10%'),
+        height: hp('8%'),
         backgroundColor: '#FFF8F1',
-        marginTop: hp('2%'),
+        marginTop: hp('0.5%'),
         justifyContent: 'center',
         alignItems: 'center'
     },
