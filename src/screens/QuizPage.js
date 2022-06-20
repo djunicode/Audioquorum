@@ -9,6 +9,7 @@ import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-nat
 import { Checkbox } from 'react-native-paper';
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import Footer from '../components/Footer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const questions = [
     {
@@ -50,15 +51,87 @@ const questions = [
   ];
 
 function QuizPage({ route }) {
+    const [data, setData] = useState([]);
+    const [isLoading, setLoading] = useState(true);
+    const [marks,setMarks]=useState(0);
+    const [duration,setDuration]=useState(30);
+  const getQuizData = async () => {
+    var token = await AsyncStorage.getItem('token');
+    // console.log(token);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
     
+    var raw = JSON.stringify({
+        "testId": route.params.testid
+    });
+
+    var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    try {
+      const response = await fetch("https://audioquorum-api.herokuapp.com/api/test/start", requestOptions);
+      const json = await response.json();
+      console.log(json.data);
+      setDuration(json.data.duration);
+      setData(json.data);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  const sendQuizMarks = async () => {
+    var token = await AsyncStorage.getItem('token');
+    // console.log(token);
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+    myHeaders.append("Content-Type", "application/json");
+    
+    var raw = JSON.stringify({
+        "testId": route.params.testid,
+        "marks": marks
+      });
+
+    var requestOptions = {
+        method: 'PUT',
+        headers: myHeaders,
+        body: raw,
+        redirect: 'follow'
+    };
+
+    try {
+      const response = await fetch("https://audioquorum-api.herokuapp.com/api/test/end", requestOptions);
+      const json = await response.json();
+      console.log(json);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
     const [checkedA, setCheckedA] = useState(false);
     const [checkedB, setCheckedB] = useState(false);
     const [checkedC, setCheckedC] = useState(false);
     const [checkedD, setCheckedD] = useState(false);
+    let answer=[];
     const [current,setCurrent]=useState(0);
     const [completed,setCompleted]=useState(false);
+    const [rtime,setRtime]=useState(29);
 
     const submitAnswer=()=>{
+        for(let i=0;i<data.totalQuestions;i++){
+            if(answer[i]==data.questionIds[i].correctAnswer){
+                setMarks(mark=>mark+5);
+            }
+        }
+        sendQuizMarks();
         setCompleted(true);
     }
     const timerr=()=>{
@@ -67,34 +140,45 @@ function QuizPage({ route }) {
         }, 30000);
     }
     useEffect(() => {
+        getQuizData();
         timerr();
+        let counter=0;
+        let oneSecInterval = setInterval(()=>{
+            // console.log(counter);
+            counter++;
+            setRtime(timee=>(timee-1));
+            if(counter==30){
+                clearInterval(oneSecInterval);
+            }
+        },1000);
       }, []);
     return (
         <View style={styles.container}>
-            {!!(questions.length>0)&& completed===false &&(
+            {!!(data.totalQuestions>0)&& completed===false && !isLoading &&(
             <>
             <View style={{ alignItems: 'center' }}>
                 <View style={{ ...styles.titleContainer, height: hp('4%') }}>
                     <Text style={styles.textStyle}>{route.params.title.toUpperCase()}</Text>
+                    {/* <Text style={styles.textStyle}>{route.params.testid.toUpperCase()}</Text> */}
                 </View>
                 <View style={{ flexDirection: 'row', marginTop: hp('3%') }}>
                     <View style={{ flexDirection: 'row' }}>
                         <Text style={styles.textStyle}>SUBJECT: </Text>
                         <View style={{ ...styles.titleContainer, width: wp('20%'), marginTop: 0 }}>
-                            <Text style={styles.textStyle}>{route.params.subject}</Text>
+                            <Text style={styles.textStyle}>{data.subject}</Text>
                         </View>
 
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: wp('4%') }}>
                         <Text style={styles.textStyle}>MARKS: </Text>
                         <View style={{ ...styles.titleContainer, width: wp('7%'), marginTop: 0 }}>
-                            <Text style={styles.textStyle}>10</Text>
+                            <Text style={styles.textStyle}>{data.totalMarks}</Text>
                         </View>
                     </View>
                     <View style={{ flexDirection: 'row', marginLeft: wp('4%') }}>
                         <Text style={styles.textStyle}>QSTNS: </Text>
                         <View style={{ ...styles.titleContainer, width: wp('7%'), marginTop: 0 }}>
-                            <Text style={styles.textStyle}>4</Text>
+                            <Text style={styles.textStyle}>{data.totalQuestions}</Text>
                         </View>
                     </View>
                 </View>
@@ -105,11 +189,11 @@ function QuizPage({ route }) {
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end', marginRight: 10, marginTop: 10 }}>
                     <Text style={styles.textStyle}>Time Left: </Text>
                     <View style={{ borderColor: 'red', height: hp('4%'), width: 50, borderWidth: 2, borderRadius: 5,alignItems:'center' }}>
-                        <Text style={{ ...styles.textStyle, color: 'red'}}>10:00</Text>
+                        <Text style={{ ...styles.textStyle, color: 'red'}}>{rtime}</Text>
                     </View>
                 </View>
                 <View style={{ marginTop: hp('2.5%') }}>
-                    <Text style={styles.questionTextStyle}>{questions[current].question}
+                    <Text style={styles.questionTextStyle}>{data.questionIds[current].questionNo} {data.questionIds[current].question}
                     </Text>
                 </View>
                 <View style={{ marginLeft: wp('4%'), marginTop: hp('2.5%') }}>
@@ -117,19 +201,19 @@ function QuizPage({ route }) {
                     <View style={{ marginLeft: wp('10%'), marginTop: hp('1.5%') }}>
                         <View style={{ flexDirection: 'row' }}>
                             <Text style={styles.textStyle}>a.</Text>
-                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{questions[current].optionA}</Text>
+                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{data.questionIds[current].optionA}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: 7 }}>
                             <Text style={styles.textStyle}>b.</Text>
-                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{questions[current].optionB}</Text>
+                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{data.questionIds[current].optionB}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: 7 }}>
                             <Text style={styles.textStyle}>c.</Text>
-                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{questions[current].optionC}</Text>
+                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{data.questionIds[current].optionC}</Text>
                         </View>
                         <View style={{ flexDirection: 'row', marginTop: 7 }}>
                             <Text style={styles.textStyle}>d.</Text>
-                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{questions[current].optionD}</Text>
+                            <Text style={{ ...styles.textStyle, marginLeft: wp('7%') }}>{data.questionIds[current].optionD}</Text>
                         </View>
                     </View>
                 </View>
@@ -146,6 +230,7 @@ function QuizPage({ route }) {
                                 setCheckedB(false);
                                 setCheckedC(false);
                                 setCheckedD(false);
+                                answer[current]=(data.questionIds[current].optionA);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -160,6 +245,7 @@ function QuizPage({ route }) {
                                 setCheckedA(false);
                                 setCheckedC(false);
                                 setCheckedD(false);
+                                answer[current]=(data.questionIds[current].optionB);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -174,6 +260,7 @@ function QuizPage({ route }) {
                                 setCheckedA(false);
                                 setCheckedB(false);
                                 setCheckedD(false);
+                                answer[current]=(data.questionIds[current].optionC);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -188,6 +275,7 @@ function QuizPage({ route }) {
                                 setCheckedA(false);
                                 setCheckedB(false);
                                 setCheckedC(false);
+                                answer[current]=(data.questionIds[current].optionD);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -211,8 +299,9 @@ function QuizPage({ route }) {
 
                 <TouchableOpacity style={styles.buttonStyle} 
                 onPress={()=>{
-                    if(current<questions.length-1)
-                    setCurrent(current+1)
+                    if(current<data.totalQuestions-1){
+                        setCurrent(current+1);
+                    }
                 }}>
                     <Text style={styles.textStyle}>Next</Text>
                 </TouchableOpacity>
