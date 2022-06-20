@@ -5,7 +5,7 @@ import { Context as AuthContext } from '../context/AuthContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 function Settings(){
     const { state, signout } = useContext(AuthContext);
-    async function handleSignout(){
+    const handleSignout=async()=>{
         var token = await AsyncStorage.getItem('token');
         console.log(token+ " handleSignoutToken");
         signout({token});
@@ -13,7 +13,7 @@ function Settings(){
     return(
         <View>
             <TouchableOpacity
-            onPress={()=>{handleSignout()}}>
+            onPress={handleSignout}>
                 <Text style={{color:'black', margin:15}}>Logout</Text>
             </TouchableOpacity>
             

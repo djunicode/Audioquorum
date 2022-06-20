@@ -1,57 +1,64 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   View,
   Text,
   StyleSheet,
   FlatList,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import Footer from '../components/Footer';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
-const DATA = [
-  {
-    id: '1',
-    time: '1.08 pm',
-    title: 'Grammar Quiz',
-    subject: 'ENGLISH',
-    due: 'due Apr 15',
-  },
-  {
-    id: '2',
-    time: '1.08 pm',
-    title: 'Grammar Quiz',
-    subject: 'ENGLISH',
-    due: 'due Apr 15',
-  },
-  {
-    id: '3',
-    time: '1.08 pm',
-    title: 'Grammar Quiz',
-    subject: 'ENGLISH',
-    due: 'due Apr 15',
-  },
-  {
-    id: '4',
-    time: '1.08 pm',
-    title: 'Grammar Quiz',
-    subject: 'ENGLISH',
-    due: 'due Apr 15',
-  },
-];
 
-function ScheduledQuizzes({navigation}) {
+function ScheduledQuizzes({ navigation }) {
 
-  const renderItem = ({ item }) => {
+
+  const [data, setData] = useState([]);
+  const [isLoading, setLoading] = useState(true);
+
+
+  const getScheduledQuizzes = async () => {
+    var token = await AsyncStorage.getItem('token');
+    // console.log(token + " getScheduledQuizzesToken");
+
+    var myHeaders = new Headers();
+    myHeaders.append("Authorization", `Bearer ${token}`);
+
+    var requestOptions = {
+      method: 'GET',
+      headers: myHeaders,
+      redirect: 'follow'
+    };
+
+    try {
+      const response = await fetch("https://audioquorum-api.herokuapp.com/api/test/view/standard", requestOptions);
+      const json = await response.json();
+      setData(json.tests);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    getScheduledQuizzes();
+  }, [])
+
+  const renderItem = ({ item, index }) => {
+    // console.log(index);
     return (
+
       <TouchableOpacity
         onPress={() => {
           navigation.navigate('QuizPage',
             {
-              title: item.title,
-              subject: item.subject,
+              title: item.name,
+              subject: item.subject
             })
         }}>
         <View style={styles.scheduleQuizContainer}>
@@ -61,8 +68,8 @@ function ScheduledQuizzes({navigation}) {
             </View>
 
             <View style={{ marginLeft: wp('3%') }}>
-              <Text style={{ ...styles.textStyle, fontFamily: 'Poppins-SemiBold' }}>{item.title}</Text>
-              <Text style={styles.textStyle}>{item.due}</Text>
+              <Text style={{ ...styles.textStyle, fontFamily: 'Poppins-SemiBold' }}>{item.name}</Text>
+              <Text style={styles.textStyle}>Due: {item.date}</Text>
               <Text style={styles.textStyle}>Subject: {item.subject}</Text>
             </View>
           </View>
@@ -85,13 +92,19 @@ function ScheduledQuizzes({navigation}) {
     );
   }
 
+
+
+
   return (
     <View style={styles.container}>
-      <FlatList
-        data={DATA}
+      {isLoading ? (
+        <ActivityIndicator />
+      ) : (<FlatList
+        data={data}
         renderItem={renderItem}
-        keyExtractor={item => item.id}
-      />
+        keyExtractor={item => item._id}
+      />)}
+
       <Footer />
     </View>
   )
@@ -101,7 +114,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    justifyContent:'space-between'
+    justifyContent: 'space-between'
   },
   scheduleQuizContainer: {
     flexDirection: 'row',
