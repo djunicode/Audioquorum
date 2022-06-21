@@ -90,6 +90,13 @@ function AppearedQuizzes({ navigation }) {
 
   return (
     <View style={styles.container}>
+      <TouchableOpacity style={{alignItems:"flex-end",marginRight:wp('2%')}} onPress={()=>
+      {
+        setLoading(true);
+        getAppearedQuizzes();
+      }}>
+        <Text style={styles.textStyle}>Refresh</Text>
+      </TouchableOpacity>
       {isLoading ? (
         <ActivityIndicator />
       ) : (<FlatList
