@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   ActivityIndicator,
+  Alert,
 } from 'react-native';
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from 'react-native-responsive-screen';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -37,6 +38,7 @@ function ScheduledQuizzes({ navigation }) {
     try {
       const response = await fetch("https://audioquorum-api.herokuapp.com/api/test/view/standard", requestOptions);
       const json = await response.json();
+      console.log(json.tests);
       setData(json.tests);
     } catch (error) {
       console.error(error);
@@ -55,12 +57,19 @@ function ScheduledQuizzes({ navigation }) {
 
       <TouchableOpacity
         onPress={() => {
-          navigation.navigate('QuizPage',
+          if(item.status=="COMPLETED"){
+            Alert.alert("Test Over!");
+          }
+          else{
+            navigation.navigate('QuizPage',
             {
               title: item.name,
-              subject: item.subject
+              subject: item.subject,
+              testid:item._id
             })
-        }}>
+          }
+        }}
+        >
         <View style={styles.scheduleQuizContainer}>
           <View style={{ flexDirection: 'row' }}>
             <View style={{ justifyContent: 'center' }}>
