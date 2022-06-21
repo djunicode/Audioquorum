@@ -74,6 +74,7 @@ function ScheduledQuizzes({ navigation }) {
           <View style={{ flexDirection: 'row' }}>
             <View style={{ justifyContent: 'center' }}>
               <Text style={styles.textStyle}>{item.time}</Text>
+              <Text style={styles.textStyle}>{item.duration} sec</Text>
             </View>
 
             <View style={{ marginLeft: wp('3%') }}>
@@ -85,7 +86,7 @@ function ScheduledQuizzes({ navigation }) {
           <View style={{ flexDirection: 'row' }}>
             <View style={{ justifyContent: 'center' }}>
               <View style={styles.buttonStyle}>
-                <Text style={styles.textStyle}>Start Quiz</Text>
+                <Text style={styles.textStyle}>Start</Text>
               </View>
             </View>
             <View>
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   },
   buttonStyle: {
     height: hp('3%'),
-    width: 80,
+    width: wp('15%'),
     borderRadius: 5,
     alignItems: 'center',
     backgroundColor: '#FFF8F1',
