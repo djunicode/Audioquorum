@@ -45,7 +45,16 @@ function App() {
           name="Signup"
           component={Signup}
         />
-
+        <AuthStack.Screen
+          options={{ headerShown: false }}
+          name="HomeScreen"
+          component={HomeScreen}
+        />
+        <AuthStack.Screen
+          options={{ headerShown: true, headerBackground: () => (<View style={{ backgroundColor: '#1D1042', height: 60 }}></View>), headerTintColor: 'white' }}
+          name="QuizPage"
+          component={QuizPage}
+        />
       </AuthStack.Navigator>
     );
   }
