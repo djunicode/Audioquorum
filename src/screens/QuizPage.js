@@ -11,50 +11,20 @@ import { TouchableOpacity } from 'react-native-gesture-handler';
 import Footer from '../components/Footer';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const questions = [
-    {
-      no: 1,
-      question: "Q1. FIND OUT THE FIGURE OF SPEECH IN THE FOLLOWING SENTENCE: “AS BUSY AS A BEE”",
-      optionA:"SIMILE",
-      optionB:"METAPHOR",
-      optionC:"ALLITERATION",
-      optionD:"INTERROGATION",
-      marks:"5",
-    },
-    {
-        no: 2,
-        question: 'Q2 This is question 2',
-        optionA:"A",
-        optionB:"B",
-        optionC:"C",
-        optionD:"D",
-        marks:"5",
-      },
-      {
-        no: 3,
-        question: 'Q3 This is question 3',
-        optionA:"A",
-        optionB:"B",
-        optionC:"C",
-        optionD:"D",
-        marks:"5",
-      },
-      {
-        no: 4,
-        question: 'Q4 This is question 4',
-        optionA:"A",
-        optionB:"B",
-        optionC:"C",
-        optionD:"D",
-        marks:"5",
-      },
-  ];
 
 function QuizPage({ route }) {
     const [data, setData] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [marks,setMarks]=useState(0);
-    const [duration,setDuration]=useState(30);
+    const [duration,setDuration]=useState(120);
+    const [checkedA, setCheckedA] = useState(false);
+    const [checkedB, setCheckedB] = useState(false);
+    const [checkedC, setCheckedC] = useState(false);
+    const [checkedD, setCheckedD] = useState(false);
+    const [answer,setAnswer]= useState([]);
+    const [current,setCurrent]=useState(0);
+    const [completed,setCompleted]=useState(false);
+    const [rtime,setRtime]=useState(119);
+
   const getQuizData = async () => {
     var token = await AsyncStorage.getItem('token');
     // console.log(token);
@@ -79,6 +49,7 @@ function QuizPage({ route }) {
       console.log(json.data);
       setDuration(json.data.duration);
       setData(json.data);
+      setRtime(json.data.duration-1)
     } catch (error) {
       console.error(error);
     } finally {
@@ -86,7 +57,8 @@ function QuizPage({ route }) {
     }
   }
 
-  const sendQuizMarks = async () => {
+  const sendQuizMarks = async (mark) => {
+    console.log(mark);
     var token = await AsyncStorage.getItem('token');
     // console.log(token);
     var myHeaders = new Headers();
@@ -95,7 +67,7 @@ function QuizPage({ route }) {
     
     var raw = JSON.stringify({
         "testId": route.params.testid,
-        "marks": marks
+        "marks": mark
       });
 
     var requestOptions = {
@@ -116,30 +88,27 @@ function QuizPage({ route }) {
     }
   }
 
-    const [checkedA, setCheckedA] = useState(false);
-    const [checkedB, setCheckedB] = useState(false);
-    const [checkedC, setCheckedC] = useState(false);
-    const [checkedD, setCheckedD] = useState(false);
-    let answer=[];
-    const [current,setCurrent]=useState(0);
-    const [completed,setCompleted]=useState(false);
-    const [rtime,setRtime]=useState(29);
 
     const submitAnswer=()=>{
+        console.log(answer);
+        let markk=0;
         for(let i=0;i<data.totalQuestions;i++){
             if(answer[i]==data.questionIds[i].correctAnswer){
-                setMarks(mark=>mark+5);
+                // console.log("Yes");
+                markk+=data.questionIds[i].marks;
             }
         }
-        sendQuizMarks();
+        // console.log(marks);
+        sendQuizMarks(markk);
         setCompleted(true);
     }
     const timerr=()=>{
         setTimeout(() => {
             setCompleted(true);
-        }, 30000);
+        }, duration*1000);
     }
     useEffect(() => {
+        setCompleted(false);
         getQuizData();
         timerr();
         let counter=0;
@@ -147,14 +116,16 @@ function QuizPage({ route }) {
             // console.log(counter);
             counter++;
             setRtime(timee=>(timee-1));
-            if(counter==30){
+            if(counter==duration){
                 clearInterval(oneSecInterval);
             }
         },1000);
       }, []);
     return (
         <View style={styles.container}>
-            {!!(data.totalQuestions>0)&& completed===false && !isLoading &&(
+            {
+            !!(data.totalQuestions>0)&&
+             completed===false && !isLoading &&(
             <>
             <View style={{ alignItems: 'center' }}>
                 <View style={{ ...styles.titleContainer, height: hp('4%') }}>
@@ -231,6 +202,7 @@ function QuizPage({ route }) {
                                 setCheckedC(false);
                                 setCheckedD(false);
                                 answer[current]=(data.questionIds[current].optionA);
+                                console.log(answer[current]);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -246,6 +218,7 @@ function QuizPage({ route }) {
                                 setCheckedC(false);
                                 setCheckedD(false);
                                 answer[current]=(data.questionIds[current].optionB);
+                                console.log(answer[current]);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -261,6 +234,7 @@ function QuizPage({ route }) {
                                 setCheckedB(false);
                                 setCheckedD(false);
                                 answer[current]=(data.questionIds[current].optionC);
+                                console.log(answer[current]);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -276,6 +250,7 @@ function QuizPage({ route }) {
                                 setCheckedB(false);
                                 setCheckedC(false);
                                 answer[current]=(data.questionIds[current].optionD);
+                                console.log(answer[current]);
                             }}
                             color={'#1D1042'}
                             uncheckColor={'red'}
@@ -318,7 +293,9 @@ function QuizPage({ route }) {
             }
 
             {completed && (
-                <Text>Quiz Submitted!</Text>
+                <View style={styles.container}>
+                    <Text>Quiz Submitted!</Text>
+                </View>
             )}
             
             <Footer />
