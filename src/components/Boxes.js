@@ -2,73 +2,26 @@ import React from 'react';
 import {View,Text,StyleSheet} from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 
-function Boxes(){
+function Boxes(props){
     return(
-        <View style={styles.container}>
+       
             <View style={styles.box}>
                 <View style={styles.inner}>
                     <View style={styles.icon}>
                       <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
                     </View>
-                    <Text style={styles.text}>Mathematics</Text>
+                    <Text style={styles.text}>{props.subjectName}</Text>
                 </View>
             </View>
-            <View style={styles.box}>
-                <View style={styles.inner}>
-                    <View style={styles.icon}>
-                      <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
-                    </View>
-                    <Text style={styles.text}>Mathematics</Text>
-                </View>
-            </View>
-            <View style={styles.box}>
-                <View style={styles.inner}>
-                    <View style={styles.icon}>
-                      <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
-                    </View>
-                    <Text style={styles.text}>Mathematics</Text>
-                </View>
-            </View>
-            <View style={styles.box}>
-                <View style={styles.inner}>
-                    <View style={styles.icon}>
-                      <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
-                    </View>
-                    <Text style={styles.text}>Mathematics</Text>
-                </View>
-            </View>
-            <View style={styles.box}>
-                <View style={styles.inner}>
-                    <View style={styles.icon}>
-                      <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
-                    </View>
-                    <Text style={styles.text}>Mathematics</Text>
-                </View>
-            </View>
-            <View style={styles.box}>
-                <View style={styles.inner}>
-                    <View style={styles.icon}>
-                      <FontAwesome  name="puzzle-piece" size={50} color="#1d1042" />
-                    </View>
-                    <Text style={styles.text}>Mathematics</Text>
-                </View>
-            </View>
-        </View>
+       
     );
 };
 
 const styles = StyleSheet.create ({
-    container: {
-        width: '100%' ,
-        height: '50%' ,
-        padding: 20,
-        paddingBottom: 20,
-        flexDirection: 'row',
-        flexWrap: 'wrap',   
-    },
+    
     box: {
-        width: '50%' ,
-        height: '50%' ,
+        width: '45%' ,
+        height: '25%' ,
         padding: 10,
         paddingBottom: 10, 
     },
